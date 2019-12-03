@@ -97,7 +97,7 @@
                 <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
             </form>
             <div id="quickConvertResult">
-                <p>&nbsp;</p> <!--where the result will be dynamically written by JS-->
+                <p></p> <!--where the result will be dynamically written by JS-->
             </div>
         </div>
         <div id="language" style="display: none;">
@@ -201,8 +201,10 @@
         </div>
     </main>
 </body>
+<script src="changeElement.js"></script>
 <script>
 		function getRates() {
+			alert("HI");
 			/* Step 1: Make instance of request object...
 			...to make HTTP request after page is loaded*/
 			request = new XMLHttpRequest();
