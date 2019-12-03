@@ -23,7 +23,7 @@
         <div id="quickConvert">
             <h2>Quick Convert</h2>
             <form name="quickForm">
-                Your Currency: <br \><select name="myCurrency" id="myCurrency">
+                Base Currency: <br \><select name="baseCurrency" id="baseCurrency">
                     <option value="USD" name="US dollar">US dollar</option>
 			<option value="EUR" name="Euro">Euro</option>
 			<option value="JPY" name="Japanese yen">Japanese yen</option>
@@ -59,7 +59,7 @@
 			<option value="ZAR" name="South African rand">South African rand</option>
                 </select><br \>
                 <input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
-                Compare to: <br \><select name="theirCurrency" id="theirCurrency">
+                Compare to: <br \><select name="compCurrency" id="compCurrency">
                     <option value="USD" name="US dollar">US dollar</option>
 			<option value="EUR" name="Euro">Euro</option>
 			<option value="JPY" name="Japanese yen">Japanese yen</option>
@@ -193,7 +193,7 @@
                     <option value="LastMonth">Last Month</option>
                     <option value="LastYear">Last Year</option>
                 </select>
-                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
+                <input id="submit" type='button' value="Submit" onclick="getRates()"> <!--calls JS function when clicked-->
             </form>
             <div id="graphResult">
                 &nbsp; <!--where the result will be dynamically written by JS-->
@@ -202,53 +202,35 @@
     </main>
 </body>
 <script>
-
 		function getRates() {
 			/* Step 1: Make instance of request object...
 			...to make HTTP request after page is loaded*/
 			request = new XMLHttpRequest();
 			console.log("1 - request object created");
-
 			// Step 2: Set the URL for the AJAX request to be the JSON file
-			base = document.getElementById("q1").value;
-			comparison = document.getElementById("q2").value;
-
+			base = document.getElementById("baseCurrency").value;
+			comparison = document.getElementById("compCurrency").value;
 			request.open("GET", "https://api.exchangeratesapi.io/latest?symbols="+comparison+"&base="+base, true);
-
-
 			console.log("2 - opened request file");
-
 			// Step 3: set up event handler/callback
-
 			request.onreadystatechange = function() {
 				console.log("3 - readystatechange event fired.");
-
 				if (request.readyState == 4 && request.status == 200) {
-
 					// Step 5: wait for done + success
 					result = request.responseText;
 					ex_rates = JSON.parse(result);
-
-					name1 = document.getElementById("q1").value;
-					name2 = document.getElementById("q2").value;
-
+					name1 = document.getElementById("baseCurrency").value;
+					name2 = document.getElementById("compCurrency").value;
 					x="1 "+name1+" = "+(Math.round(ex_rates.rates[name2] * 100) / 100)+" "+name2;
-					document.getElementById("data").innerHTML =x;
+					document.getElementById("quickConvertResult").innerHTML =x;
 					
 				}
 				else if (request.readyState == 4 && request.status != 200) {
-
-					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
-
+					document.getElementById("quickConvertResult").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
 				}
-
 				else if (request.readyState == 3) {
-
-					document.getElementById("data").innerHTML = "Too soon!  Try again";
-
+					document.getElementById("quickConvertResult").innerHTML = "Too soon!  Try again";
 				}
-
-
 			}
 		// Step 4: fire off the HTTP request
 		request.send();
