@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="mainStyling.css">
+    <script src="jquery_library.js"></script>
+</head>
+<body>
+    <h1>Currency Converter</h1>
+    <nav>
+        <div id="brush"></div>
+        <ul>
+            <li><button class="sidebar" id="sidebar1" type="button">Quick Convert</button></li>
+            <li><button class="sidebar" id="sidebar2" type="button">Search by Language</button></li>
+            <li><button class="sidebar" id="sidebar3" type="button">Exchange Rate Graph</button></li>
+        </ul>
+    </nav>
+    <main>
+        <div id="quickConvert">
+            <h2>Quick Convert</h2>
+            <form name="quickForm">
+                Your Currency: <br \><select name="myCurrency" id="myCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CAD">CAD</option>
+                </select><br \>
+                <input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
+                Compare to: <br \><select name="theirCurrency" id="theirCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CAD">CAD</option>
+                </select>
+                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
+            </form>
+            <div id="quickConvertResult">
+                <p>&nbsp;</p> <!--where the result will be dynamically written by JS-->
+            </div>
+        </div>
+        <div id="language" style="display: none;">
+            <h2>Search by Language</h2>
+            <form name="languageForm">
+                Your Currency: <br \><select name="myCurrency" id="myCurrency">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CAD">CAD</option>
+                </select><br \>
+                <input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
+                Display countries that speak: <br \><select name="myLanguage" id="myLanguage">
+                    <option value="English">English</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                </select>
+                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
+            </form>
+            <div id="languageResult">
+                <p>&nbsp;</p> <!--where the result will be dynamically written by JS-->
+            </div>
+        </div>
+        <div id="graph" style="display: none;">
+            <h2>Exchange Rate Graph</h2>
+            <form name="rateForm">
+                Compare USD to: <br \><select name="currency" id="currency">
+                    <option value="USD">EUR</option>
+                    <option value="EUR">CAD</option>
+                    <option value="CAD">WON</option>
+                </select><br \>
+                <select name="time" id="time">
+                    <option value="LastWeek">Last Week</option>
+                    <option value="LastMonth">Last Month</option>
+                    <option value="LastYear">Last Year</option>
+                </select>
+                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
+            </form>
+            <div id="graphResult">
+                &nbsp; <!--where the result will be dynamically written by JS-->
+            </div>
+        </div>
+    </main>
+</body>
+<script language="javascript" src="changeElements.js"></script>
+</html>

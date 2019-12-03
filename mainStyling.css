@@ -1,0 +1,111 @@
+body{
+    padding: 100px;
+    background-color: #0B136E;
+    color: #fff;
+}
+
+h1{
+    margin-top: -30px;
+    margin-bottom: 30px;
+    font-size: 60px;
+    font-weight: 200;
+    padding: 20px;
+    font-family: 'Lato';
+}
+
+nav{
+    float: left;
+    width: 280px;
+}
+
+ul{
+    list-style: none;
+    line-height: 100px;
+}
+
+button:hover{
+    font-size: 15pt;
+}
+
+li button{
+    text-decoration: none;
+    border: none;
+    background-color: #0B136E;
+    color: #fff;
+    font-size: 13pt;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: font-size 0.5s;
+}
+
+main{
+    float: left;
+    margin-left: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 40px;
+}
+
+.sidebar::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 1px;
+    background: #fff;
+    transition: width .5s;
+    margin-top: 6px;
+}
+
+#sidebar1:hover::after {
+    width: 125px;
+    transition: width .5s;
+}
+
+#sidebar2:hover::after {
+    width: 180px;
+    transition: width .5s;
+}
+
+#sidebar3:hover::after {
+    width: 195px;
+    transition: width .5s;
+}
+
+h2{
+    font-size: 30pt;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+}
+
+select{
+    background-color: #fff;
+    width: 250px; 
+    height: 35px;
+    font-size: 15px;
+    color: #0B136E;
+}
+
+#amount{
+    background-color: #fff;
+    width: 250px; 
+    height: 30px;
+    font-size: 15px;
+    color: #0B136E;
+    border-radius: 5pt;
+}
+
+#submit{
+    width: 60px;
+    font-size: 20pt;
+    height: 150px;
+    margin-left: 10px;
+    
+}
+
+#brush{
+    width: 1px;
+    height: 230px;
+    background-color: #fff;
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 10px;
+
+}
