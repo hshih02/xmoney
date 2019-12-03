@@ -171,5 +171,58 @@
         </div>
     </main>
 </body>
-<script language="javascript" src="changeElements.js"></script>
+<script>
+
+		function getRates() {
+			/* Step 1: Make instance of request object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+
+			// Step 2: Set the URL for the AJAX request to be the JSON file
+			base = document.getElementById("q1").value;
+			comparison = document.getElementById("q2").value;
+
+			request.open("GET", "https://api.exchangeratesapi.io/latest?symbols="+comparison+"&base="+base, true);
+
+
+			console.log("2 - opened request file");
+
+			// Step 3: set up event handler/callback
+
+			request.onreadystatechange = function() {
+				console.log("3 - readystatechange event fired.");
+
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+					result = request.responseText;
+					ex_rates = JSON.parse(result);
+
+					name1 = document.getElementById("q1").value;
+					name2 = document.getElementById("q2").value;
+
+					x="1 "+name1+" = "+(Math.round(ex_rates.rates[name2] * 100) / 100)+" "+name2;
+					document.getElementById("data").innerHTML =x;
+					
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Too soon!  Try again";
+
+				}
+
+
+			}
+		// Step 4: fire off the HTTP request
+		request.send();
+		console.log("4 - Request sent");
+	}
+</script>
 </html>
