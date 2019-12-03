@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+	<title>Exchange Rates</title>
+	<meta charset="utf-8"/>
+	
+</head>
+<body>
+
+	<form>
+		<div>Base Currency</div>
+		<select id="q1" name="Base Currency">
+			<option value="USD" name="US dollar">US dollar</option>
+			<option value="EUR" name="Euro">Euro</option>
+			<option value="JPY" name="Japanese yen">Japanese yen</option>
+			<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+			<option value="CZK" name="Czech koruna">Czech koruna</option>
+			<option value="DKK" name="Danish krone">Danish krone</option>
+			<option value="GBP" name="Pound sterling">Pound sterling</option>
+			<option value="HUF" name="Hungarian forint">Hungarian forint</option>
+			<option value="PLN" name="Polish zloty">Polish zloty</option>
+			<option value="RON" name="Romanian leu">Romanian leu</option>
+			<option value="SEK" name="Swedish krona">Swedish krona</option>
+			<option value="CHF" name="Swiss franc">Swiss franc</option>
+			<option value="ISK" name="Icelandic krona">Icelandic krona</option>
+			<option value="NOK" name="Norwegian krone">Norwegian krone</option>
+			<option value="HRK" name="Croatian kuna">Croatian kuna</option>
+			<option value="RUB" name="Russian rouble">Russian rouble</option>
+			<option value="TRY" name="Turkish lira">Turkish lira</option>
+			<option value="AUD" name="Australian dollar">Australian dollar</option>
+			<option value="BRL" name="Brazilian real">Brazilian real</option>
+			<option value="CAD" name="Canadian dollar">Canadian dollar</option>
+			<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+			<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+			<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+			<option value="ILS" name="Israeli shekel">Israeli shekel</option>
+			<option value="INR" name="Indian rupee">Indian rupee</option>
+			<option value="KRW" name="South Korean won">South Korean won</option>
+			<option value="MXN" name="Mexican peso">Mexican peso</option>
+			<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+			<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+			<option value="PHP" name="Philippine peso">Philippine peso</option>
+			<option value="SGD" name="Singapore dollar">Singapore dollar</option>
+			<option value="THB" name="Thai baht">Thai baht</option>
+			<option value="ZAR" name="South African rand">South African rand</option>
+		</select>
+		<div>Comparison Currency</div>
+		<select id="q2" name="Comparison Currency">
+			<option value="USD" name="US dollar">US dollar</option>
+			<option value="EUR" name="Euro">Euro</option>
+			<option value="JPY" name="Japanese yen">Japanese yen</option>
+			<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+			<option value="CZK" name="Czech koruna">Czech koruna</option>
+			<option value="DKK" name="Danish krone">Danish krone</option>
+			<option value="GBP" name="Pound sterling">Pound sterling</option>
+			<option value="HUF" name="Hungarian forint">Hungarian forint</option>
+			<option value="PLN" name="Polish zloty">Polish zloty</option>
+			<option value="RON" name="Romanian leu">Romanian leu</option>
+			<option value="SEK" name="Swedish krona">Swedish krona</option>
+			<option value="CHF" name="Swiss franc">Swiss franc</option>
+			<option value="ISK" name="Icelandic krona">Icelandic krona</option>
+			<option value="NOK" name="Norwegian krone">Norwegian krone</option>
+			<option value="HRK" name="Croatian kuna">Croatian kuna</option>
+			<option value="RUB" name="Russian rouble">Russian rouble</option>
+			<option value="TRY" name="Turkish lira">Turkish lira</option>
+			<option value="AUD" name="Australian dollar">Australian dollar</option>
+			<option value="BRL" name="Brazilian real">Brazilian real</option>
+			<option value="CAD" name="Canadian dollar">Canadian dollar</option>
+			<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+			<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+			<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+			<option value="ILS" name="Israeli shekel">Israeli shekel</option>
+			<option value="INR" name="Indian rupee">Indian rupee</option>
+			<option value="KRW" name="South Korean won">South Korean won</option>
+			<option value="MXN" name="Mexican peso">Mexican peso</option>
+			<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+			<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+			<option value="PHP" name="Philippine peso">Philippine peso</option>
+			<option value="SGD" name="Singapore dollar">Singapore dollar</option>
+			<option value="THB" name="Thai baht">Thai baht</option>
+			<option value="ZAR" name="South African rand">South African rand</option>
+		</select>
+		<br><br>
+		<button type="button" onclick="getRates()" >Get Exchange Rate</button>
+		<div id="data"></div>
+	</form>
+
+
+	<script>
+
+		function getRates() {
+			/* Step 1: Make instance of request object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+
+			// Step 2: Set the URL for the AJAX request to be the JSON file
+			base = document.getElementById("q1").value;
+			comparison = document.getElementById("q2").value;
+
+			request.open("GET", "https://api.exchangeratesapi.io/latest?symbols="+comparison+"&base="+base, true);
+
+
+			console.log("2 - opened request file");
+
+			// Step 3: set up event handler/callback
+
+			request.onreadystatechange = function() {
+				console.log("3 - readystatechange event fired.");
+
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+					result = request.responseText;
+					ex_rates = JSON.parse(result);
+
+					name1 = document.getElementById("q1").value;
+					name2 = document.getElementById("q2").value;
+
+					x="1 "+name1+" = "+(Math.round(ex_rates.rates[name2] * 100) / 100)+" "+name2;
+					document.getElementById("data").innerHTML =x;
+					
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Too soon!  Try again";
+
+				}
+
+
+			}
+		// Step 4: fire off the HTTP request
+		request.send();
+		console.log("4 - Request sent");
+	}
+</script>
+</body>
+</html>
