@@ -94,7 +94,7 @@
 			<option value="THB" name="Thai baht">Thai baht</option>
 			<option value="ZAR" name="South African rand">South African rand</option>
                 </select>
-                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
+                <input id="submit" type='button' value="Submit" onclick="getRates()"> <!--calls JS function when clicked-->
             </form>
             <div id="quickConvertResult">
                 <p></p> <!--where the result will be dynamically written by JS-->
@@ -193,7 +193,7 @@
                     <option value="LastMonth">Last Month</option>
                     <option value="LastYear">Last Year</option>
                 </select>
-                <input id="submit" type='button' value="Submit" onclick="getRates()"> <!--calls JS function when clicked-->
+                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
             </form>
             <div id="graphResult">
                 &nbsp; <!--where the result will be dynamically written by JS-->
@@ -204,7 +204,6 @@
 <script src="changeElement.js"></script>
 <script>
 		function getRates() {
-			alert("HI");
 			/* Step 1: Make instance of request object...
 			...to make HTTP request after page is loaded*/
 			request = new XMLHttpRequest();
