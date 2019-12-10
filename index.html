@@ -4,22 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Exchange Rates</title>
+    <title>Document</title>
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="mainStyling.css">
     <script src="jquery_library.js"></script>
 </head>
 <body>
-    <h1>Currency Converter</h1>
-    <nav>
+    <h1 style="display: none;">Currency Converter</h1>
+    <nav style="display: none;">
         <div id="brush"></div>
         <ul>
             <li><button class="sidebar" id="sidebar1" type="button">Quick Convert</button></li>
-            <li><button class="sidebar" id="sidebar2" type="button">Search by Language</button></li>
-            <li><button class="sidebar" id="sidebar3" type="button">Exchange Rate Graph</button></li>
+            <li><button class="sidebar" id="sidebar2" type="button">Exchange Rate Graph</button></li>
         </ul>
     </nav>
-    <main>
+    <main style="display: none;">
         <div id="quickConvert">
             <h2>Quick Convert</h2>
             <form name="quickForm">
@@ -61,92 +60,42 @@
                 <input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
                 Compare to: <br \><select name="compCurrency" id="compCurrency">
                     <option value="USD" name="US dollar">US dollar</option>
-			<option value="EUR" name="Euro">Euro</option>
-			<option value="JPY" name="Japanese yen">Japanese yen</option>
-			<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-			<option value="CZK" name="Czech koruna">Czech koruna</option>
-			<option value="DKK" name="Danish krone">Danish krone</option>
-			<option value="GBP" name="Pound sterling">Pound sterling</option>
-			<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-			<option value="PLN" name="Polish zloty">Polish zloty</option>
-			<option value="RON" name="Romanian leu">Romanian leu</option>
-			<option value="SEK" name="Swedish krona">Swedish krona</option>
-			<option value="CHF" name="Swiss franc">Swiss franc</option>
-			<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-			<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-			<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-			<option value="RUB" name="Russian rouble">Russian rouble</option>
-			<option value="TRY" name="Turkish lira">Turkish lira</option>
-			<option value="AUD" name="Australian dollar">Australian dollar</option>
-			<option value="BRL" name="Brazilian real">Brazilian real</option>
-			<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-			<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-			<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-			<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-			<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-			<option value="INR" name="Indian rupee">Indian rupee</option>
-			<option value="KRW" name="South Korean won">South Korean won</option>
-			<option value="MXN" name="Mexican peso">Mexican peso</option>
-			<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-			<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-			<option value="PHP" name="Philippine peso">Philippine peso</option>
-			<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-			<option value="THB" name="Thai baht">Thai baht</option>
-			<option value="ZAR" name="South African rand">South African rand</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
                 </select>
                 <input id="submit" type='button' value="Submit" onclick="getRates()"> <!--calls JS function when clicked-->
             </form>
             <div id="quickConvertResult">
-                <p></p> <!--where the result will be dynamically written by JS-->
-            </div>
-        </div>
-        <div id="language" style="display: none;">
-            <h2>Search by Language</h2>
-            <form name="languageForm">
-                Your Currency: <br \><select name="myCurrency" id="myCurrency">
-                    <option value="USD" name="US dollar">US dollar</option>
-			<option value="EUR" name="Euro">Euro</option>
-			<option value="JPY" name="Japanese yen">Japanese yen</option>
-			<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-			<option value="CZK" name="Czech koruna">Czech koruna</option>
-			<option value="DKK" name="Danish krone">Danish krone</option>
-			<option value="GBP" name="Pound sterling">Pound sterling</option>
-			<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-			<option value="PLN" name="Polish zloty">Polish zloty</option>
-			<option value="RON" name="Romanian leu">Romanian leu</option>
-			<option value="SEK" name="Swedish krona">Swedish krona</option>
-			<option value="CHF" name="Swiss franc">Swiss franc</option>
-			<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-			<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-			<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-			<option value="RUB" name="Russian rouble">Russian rouble</option>
-			<option value="TRY" name="Turkish lira">Turkish lira</option>
-			<option value="AUD" name="Australian dollar">Australian dollar</option>
-			<option value="BRL" name="Brazilian real">Brazilian real</option>
-			<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-			<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-			<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-			<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-			<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-			<option value="INR" name="Indian rupee">Indian rupee</option>
-			<option value="KRW" name="South Korean won">South Korean won</option>
-			<option value="MXN" name="Mexican peso">Mexican peso</option>
-			<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-			<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-			<option value="PHP" name="Philippine peso">Philippine peso</option>
-			<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-			<option value="THB" name="Thai baht">Thai baht</option>
-			<option value="ZAR" name="South African rand">South African rand</option>
-                </select><br \>
-                <input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
-                Display countries that speak: <br \><select name="myLanguage" id="myLanguage">
-                    <option value="English">English</option>
-                    <option value="French">French</option>
-                    <option value="Spanish">Spanish</option>
-                </select>
-                <input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
-            </form>
-            <div id="languageResult">
                 <p>&nbsp;</p> <!--where the result will be dynamically written by JS-->
             </div>
         </div>
@@ -155,38 +104,38 @@
             <form name="rateForm">
                 Compare USD to: <br \><select name="currency" id="currency">
                     <option value="USD" name="US dollar">US dollar</option>
-			<option value="EUR" name="Euro">Euro</option>
-			<option value="JPY" name="Japanese yen">Japanese yen</option>
-			<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-			<option value="CZK" name="Czech koruna">Czech koruna</option>
-			<option value="DKK" name="Danish krone">Danish krone</option>
-			<option value="GBP" name="Pound sterling">Pound sterling</option>
-			<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-			<option value="PLN" name="Polish zloty">Polish zloty</option>
-			<option value="RON" name="Romanian leu">Romanian leu</option>
-			<option value="SEK" name="Swedish krona">Swedish krona</option>
-			<option value="CHF" name="Swiss franc">Swiss franc</option>
-			<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-			<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-			<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-			<option value="RUB" name="Russian rouble">Russian rouble</option>
-			<option value="TRY" name="Turkish lira">Turkish lira</option>
-			<option value="AUD" name="Australian dollar">Australian dollar</option>
-			<option value="BRL" name="Brazilian real">Brazilian real</option>
-			<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-			<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-			<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-			<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-			<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-			<option value="INR" name="Indian rupee">Indian rupee</option>
-			<option value="KRW" name="South Korean won">South Korean won</option>
-			<option value="MXN" name="Mexican peso">Mexican peso</option>
-			<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-			<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-			<option value="PHP" name="Philippine peso">Philippine peso</option>
-			<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-			<option value="THB" name="Thai baht">Thai baht</option>
-			<option value="ZAR" name="South African rand">South African rand</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
                 </select><br \>
                 <select name="time" id="time">
                     <option value="LastWeek">Last Week</option>
@@ -199,9 +148,14 @@
                 &nbsp; <!--where the result will be dynamically written by JS-->
             </div>
         </div>
+        <div id="drawing">
+            <div class="circle"id="circle1">&nbsp;</div>   
+            <div class="circle"id="circle2">&nbsp;</div>
+        </div>
     </main>
 </body>
-<script src="changeElements.js"></script>
+<script src="animation.js"></script>
+<script language="javascript" src="changeElements.js"></script>
 <script>
 		function getRates() {
 			/* Step 1: Make instance of request object...
@@ -211,8 +165,6 @@
 			// Step 2: Set the URL for the AJAX request to be the JSON file
 			base = document.getElementById("baseCurrency").value;
 			comparison = document.getElementById("compCurrency").value;
-			amount = document.getElementById("amount").value;
-
 			request.open("GET", "https://api.exchangeratesapi.io/latest?symbols="+comparison+"&base="+base, true);
 			console.log("2 - opened request file");
 			// Step 3: set up event handler/callback
@@ -224,10 +176,7 @@
 					ex_rates = JSON.parse(result);
 					name1 = document.getElementById("baseCurrency").value;
 					name2 = document.getElementById("compCurrency").value;
-					comp1 = ex_rates.rates[name2];
-					comp2 = comp1 * amount;
-					comp3 = (Math.round(comp2 * 100) / 100);
-					x= amount+" "+name1+" = "+comp3+" "+name2;
+					x="1 "+name1+" = "+(Math.round(ex_rates.rates[name2] * 100) / 100)+" "+name2;
 					document.getElementById("quickConvertResult").innerHTML =x;
 					
 				}
