@@ -1,259 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Exchange Rates</title>
-	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-	<link type="text/css" rel="stylesheet" href="mainStyling.css">
-	<script src="jquery_library.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="mainStyling.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+    <script src="./util.js"></script>
+    <script src="./dates.js"></script>
+    <script src="jquery_library.js"></script>
+    <script>
+        function addVal(targetchart, value, newlabel) {
+            if (targetchart.data.datasets.length > 0) {
+                console.log("adding data " + value);
+                // var newlabel = "addedvalue";
+                targetchart.data.labels.push(newlabel);
+                targetchart.data.datasets.forEach(function (dataset) {
+                    dataset.data.push(value);
+                });
+                // window.myLine.update();
+            }
+        }
+        async function fetchrate(targetCurr, baseCurr, yyyy, mm, dd) {
+            var targetDate = yyyy + "-" + mm + "-" + dd;
+            const response = await fetch("https://api.exchangeratesapi.io/" + yyyy + "-" + mm + "-" + dd + "?symbols=" + targetCurr + "&base=" + baseCurr)
+                .then(res => res.json())
+                .then(data => {
+                    console.log("fetch success");
+                    console.log(data);
+                    console.log("actual date: " + targetDate);
+                    addVal(myChart, data.rates[targetCurr], targetDate);
+                    window.myLine.update();
+                }).catch(err => {
+                    console.error("Error: ", err);
+                });
+        }
+        async function graphYear(targetCurr, baseCurr) {
+            var yyyy = getcurrYear();
+            var mm = getcurrMonth();
+            for (i = 1; i <= 12; i++) {
+                const response = await fetchrate(targetCurr, baseCurr, yyyy, mm, 01)
+                    .then(function (response) {
+                        if (mm == "01") {
+                            mm = "12";
+                            yyyy--;
+                        } else {
+                            mm--;
+                        }
+                    });
+            }
+        }
+        async function graphWeek(targetCurr, baseCurr) {
+            var yyyy = getcurrYear();
+            var mm = getcurrMonth();
+            var dd = getcurrDay();
+            for (i = 1; i <= 7; i++) {
+                const response = await fetchrate(targetCurr, baseCurr, yyyy, mm, dd)
+                    .then(function (response) {
+                        if (dd == "01") {
+                            switch (mm) {
+                                case "01":
+                                    //jan to dec
+                                    dd = "31";
+                                    mm = "12";
+                                    yyyy--;
+                                    break;
+                                case "02":
+                                    //feb to jan
+                                    dd = "31";
+                                    mm = "01";
+                                    break;
+                                case "03":
+                                    //mar to feb
+                                    dd = "28";
+                                    mm = "02";
+                                    break;
+                                case "04":
+                                    //apr to mar
+                                    dd = "31";
+                                    mm = "03";
+                                    break;
+                                case "05":
+                                    //may to apr
+                                    dd = "30";
+                                    mm = "04";
+                                    break;
+                                case "06":
+                                    //jun to may
+                                    dd = "31";
+                                    mm = "05";
+                                    break;
+                                case "07":
+                                    //jul to jun
+                                    dd = "30";
+                                    mm = "06";
+                                    break;
+                                case "08":
+                                    //aug to jul
+                                    dd = "31";
+                                    mm = "07";
+                                    break;
+                                case "09":
+                                    //sept to aug
+                                    dd = "31";
+                                    mm = "08";
+                                    break;
+                                case "10":
+                                    //oct to sept
+                                    dd = "30";
+                                    mm = "09";
+                                    break;
+                                case "11":
+                                    //nov to oct
+                                    dd = "31";
+                                    mm = "10";
+                                    break;
+                                case "12":
+                                    //dec to nov
+                                    dd = "30";
+                                    mm = "11";
+                                    break;
+                                default:
+                                // code block
+                            }
+                        } else {
+                            dd--;
+                        }
+                    });
+            }
+        }
+        console.log("running script in chart.js");
+        var myChart = {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '',
+                    fill: false,
+                    backgroundColor: window.chartColors.white,
+                    borderColor: window.chartColors.blue,
+                    data: [
+                    ],
+                    lineTension: 0,
+                }]
+            },
+            options: {
+                defaultFontColor: "white",
+                fontColor: "white",
+                legend:{
+                    labels:{
+                        fontColor: "white"
+                    }
+                },
+                responsive: true,
+                title: {
+                    fontColor: "white",
+                    display: true,
+                    text: 'Currency Graph'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date',
+                            fontColor: "white"
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Value',
+                            fontColor: "white"
+                        }
+                    }]
+                }
+            }
+        };
+    </script>
 </head>
+
 <body>
-	<h1>Currency Converter</h1>
-	<nav>
-		<div id="brush"></div>
-		<ul>
-			<li><button class="sidebar" id="sidebar1" type="button">Quick Convert</button></li>
-			<li><button class="sidebar" id="sidebar2" type="button">Search by Language</button></li>
-			<li><button class="sidebar" id="sidebar3" type="button">Exchange Rate Graph</button></li>
-		</ul>
-	</nav>
-	<main>
-		<div id="currency"></div>
-		<div id="quickConvert">
-			<h2>Quick Convert</h2>
-			<form name="quickForm">
-				Base Currency: <br \><select name="baseCurrency" id="baseCurrency">
-					<option value="USD" name="US dollar">US dollar</option>
-					<option value="EUR" name="Euro">Euro</option>
-					<option value="JPY" name="Japanese yen">Japanese yen</option>
-					<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-					<option value="CZK" name="Czech koruna">Czech koruna</option>
-					<option value="DKK" name="Danish krone">Danish krone</option>
-					<option value="GBP" name="Pound sterling">Pound sterling</option>
-					<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-					<option value="PLN" name="Polish zloty">Polish zloty</option>
-					<option value="RON" name="Romanian leu">Romanian leu</option>
-					<option value="SEK" name="Swedish krona">Swedish krona</option>
-					<option value="CHF" name="Swiss franc">Swiss franc</option>
-					<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-					<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-					<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-					<option value="RUB" name="Russian rouble">Russian rouble</option>
-					<option value="TRY" name="Turkish lira">Turkish lira</option>
-					<option value="AUD" name="Australian dollar">Australian dollar</option>
-					<option value="BRL" name="Brazilian real">Brazilian real</option>
-					<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-					<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-					<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-					<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-					<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-					<option value="INR" name="Indian rupee">Indian rupee</option>
-					<option value="KRW" name="South Korean won">South Korean won</option>
-					<option value="MXN" name="Mexican peso">Mexican peso</option>
-					<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-					<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-					<option value="PHP" name="Philippine peso">Philippine peso</option>
-					<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-					<option value="THB" name="Thai baht">Thai baht</option>
-					<option value="ZAR" name="South African rand">South African rand</option>
-				</select><br \>
-				<input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
-				Compare to: <br \><select name="compCurrency" id="compCurrency">
-					<option value="USD" name="US dollar">US dollar</option>
-					<option value="EUR" name="Euro">Euro</option>
-					<option value="JPY" name="Japanese yen">Japanese yen</option>
-					<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-					<option value="CZK" name="Czech koruna">Czech koruna</option>
-					<option value="DKK" name="Danish krone">Danish krone</option>
-					<option value="GBP" name="Pound sterling">Pound sterling</option>
-					<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-					<option value="PLN" name="Polish zloty">Polish zloty</option>
-					<option value="RON" name="Romanian leu">Romanian leu</option>
-					<option value="SEK" name="Swedish krona">Swedish krona</option>
-					<option value="CHF" name="Swiss franc">Swiss franc</option>
-					<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-					<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-					<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-					<option value="RUB" name="Russian rouble">Russian rouble</option>
-					<option value="TRY" name="Turkish lira">Turkish lira</option>
-					<option value="AUD" name="Australian dollar">Australian dollar</option>
-					<option value="BRL" name="Brazilian real">Brazilian real</option>
-					<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-					<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-					<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-					<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-					<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-					<option value="INR" name="Indian rupee">Indian rupee</option>
-					<option value="KRW" name="South Korean won">South Korean won</option>
-					<option value="MXN" name="Mexican peso">Mexican peso</option>
-					<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-					<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-					<option value="PHP" name="Philippine peso">Philippine peso</option>
-					<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-					<option value="THB" name="Thai baht">Thai baht</option>
-					<option value="ZAR" name="South African rand">South African rand</option>
-				</select>
-				<input id="submit" type='button' value="Submit" onclick="getRates()"> <!--calls JS function when clicked-->
-			</form>
-			<div id="quickConvertResult">
-				<p></p> <!--where the result will be dynamically written by JS-->
-			</div>
-		</div>
-		<div id="language" style="display: none;">
-			<h2>Search by Language</h2>
-			<form name="languageForm">
-				Your Currency: <br \><select name="myCurrency" id="myCurrency">
-					<option value="USD" name="US dollar">US dollar</option>
-					<option value="EUR" name="Euro">Euro</option>
-					<option value="JPY" name="Japanese yen">Japanese yen</option>
-					<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-					<option value="CZK" name="Czech koruna">Czech koruna</option>
-					<option value="DKK" name="Danish krone">Danish krone</option>
-					<option value="GBP" name="Pound sterling">Pound sterling</option>
-					<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-					<option value="PLN" name="Polish zloty">Polish zloty</option>
-					<option value="RON" name="Romanian leu">Romanian leu</option>
-					<option value="SEK" name="Swedish krona">Swedish krona</option>
-					<option value="CHF" name="Swiss franc">Swiss franc</option>
-					<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-					<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-					<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-					<option value="RUB" name="Russian rouble">Russian rouble</option>
-					<option value="TRY" name="Turkish lira">Turkish lira</option>
-					<option value="AUD" name="Australian dollar">Australian dollar</option>
-					<option value="BRL" name="Brazilian real">Brazilian real</option>
-					<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-					<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-					<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-					<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-					<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-					<option value="INR" name="Indian rupee">Indian rupee</option>
-					<option value="KRW" name="South Korean won">South Korean won</option>
-					<option value="MXN" name="Mexican peso">Mexican peso</option>
-					<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-					<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-					<option value="PHP" name="Philippine peso">Philippine peso</option>
-					<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-					<option value="THB" name="Thai baht">Thai baht</option>
-					<option value="ZAR" name="South African rand">South African rand</option>
-				</select><br \>
-				<input type="text" name="amount" id="amount" placeholder="  Amount"><br \><br \>
-				Display countries that speak: <br \><select name="myLanguage" id="myLanguage">
-					<option value="English">English</option>
-					<option value="French">French</option>
-					<option value="Spanish">Spanish</option>
-				</select>
-				<input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
-			</form>
-			<div id="languageResult">
-				<p>&nbsp;</p> <!--where the result will be dynamically written by JS-->
-			</div>
-		</div>
-		<div id="graph" style="display: none;">
-			<h2>Exchange Rate Graph</h2>
-			<form name="rateForm">
-				Compare USD to: <br \><select name="currency" id="currency">
-					<option value="USD" name="US dollar">US dollar</option>
-					<option value="EUR" name="Euro">Euro</option>
-					<option value="JPY" name="Japanese yen">Japanese yen</option>
-					<option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
-					<option value="CZK" name="Czech koruna">Czech koruna</option>
-					<option value="DKK" name="Danish krone">Danish krone</option>
-					<option value="GBP" name="Pound sterling">Pound sterling</option>
-					<option value="HUF" name="Hungarian forint">Hungarian forint</option>
-					<option value="PLN" name="Polish zloty">Polish zloty</option>
-					<option value="RON" name="Romanian leu">Romanian leu</option>
-					<option value="SEK" name="Swedish krona">Swedish krona</option>
-					<option value="CHF" name="Swiss franc">Swiss franc</option>
-					<option value="ISK" name="Icelandic krona">Icelandic krona</option>
-					<option value="NOK" name="Norwegian krone">Norwegian krone</option>
-					<option value="HRK" name="Croatian kuna">Croatian kuna</option>
-					<option value="RUB" name="Russian rouble">Russian rouble</option>
-					<option value="TRY" name="Turkish lira">Turkish lira</option>
-					<option value="AUD" name="Australian dollar">Australian dollar</option>
-					<option value="BRL" name="Brazilian real">Brazilian real</option>
-					<option value="CAD" name="Canadian dollar">Canadian dollar</option>
-					<option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
-					<option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
-					<option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
-					<option value="ILS" name="Israeli shekel">Israeli shekel</option>
-					<option value="INR" name="Indian rupee">Indian rupee</option>
-					<option value="KRW" name="South Korean won">South Korean won</option>
-					<option value="MXN" name="Mexican peso">Mexican peso</option>
-					<option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
-					<option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
-					<option value="PHP" name="Philippine peso">Philippine peso</option>
-					<option value="SGD" name="Singapore dollar">Singapore dollar</option>
-					<option value="THB" name="Thai baht">Thai baht</option>
-					<option value="ZAR" name="South African rand">South African rand</option>
-				</select><br \>
-				<select name="time" id="time">
-					<option value="LastWeek">Last Week</option>
-					<option value="LastMonth">Last Month</option>
-					<option value="LastYear">Last Year</option>
-				</select>
-				<input id="submit" type='button' value="Submit" onclick=""> <!--calls JS function when clicked-->
-			</form>
-			<div id="graphResult">
-				&nbsp; <!--where the result will be dynamically written by JS-->
-			</div>
-		</div>
-	</main>
+    <h1 style="display: none;">Currency Converter</h1>
+    <nav style="display: none;">
+        <div id="brush"></div>
+        <ul>
+            <li><button class="sidebar" id="sidebar1" type="button">Quick Convert</button></li>
+            <li><button class="sidebar" id="sidebar2" type="button">Exchange Rate Graph</button></li>
+        </ul>
+    </nav>
+    <main style="display: none;">
+        <div id="quickConvert">
+            <h2>Quick Convert</h2>
+            <form name="quickForm">
+                Base Currency: <br \><select name="baseCurrency" id="baseCurrency">
+                    <option value="USD" name="US dollar">US dollar</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
+                </select><div id="currency"></div><br \>
+                Amount: <br \>
+                <input type="text" name="amount" id="amount" value=1><br \><br \>
+                Compare to: <br \>
+                <select name="compCurrency" id="compCurrency">
+                    <option value="USD" name="US dollar">US dollar</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
+                </select>
+                <input id="submit" type='button' value="Submit" onclick="getRates()">
+                <!--calls JS function when clicked-->
+            </form><br \>
+            <div id="quickConvertResult">
+                <p>&nbsp;</p>
+                <!--where the result will be dynamically written by JS-->
+            </div>
+        </div>
+        <div id="graph" style="display: none;">
+            <h2>Exchange Rate Graph</h2>
+            <form name="rateForm">
+                Base Currency: <br \>
+                <select name="baseCurrencyForGraph" id="baseCurrencyForGraph">
+                    <option value="USD" name="US dollar">US dollar</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
+                </select><br \><br \>
+                Target Currency: <br \>
+                <select name="targetCurrencyForGraph" id="targetCurrencyForGraph">
+                    <option value="USD" name="US dollar">US dollar</option>
+                    <option value="EUR" name="Euro">Euro</option>
+                    <option value="JPY" name="Japanese yen">Japanese yen</option>
+                    <option value="BGN" name="Bulgarian lev">Bulgarian lev</option>
+                    <option value="CZK" name="Czech koruna">Czech koruna</option>
+                    <option value="DKK" name="Danish krone">Danish krone</option>
+                    <option value="GBP" name="Pound sterling">Pound sterling</option>
+                    <option value="HUF" name="Hungarian forint">Hungarian forint</option>
+                    <option value="PLN" name="Polish zloty">Polish zloty</option>
+                    <option value="RON" name="Romanian leu">Romanian leu</option>
+                    <option value="SEK" name="Swedish krona">Swedish krona</option>
+                    <option value="CHF" name="Swiss franc">Swiss franc</option>
+                    <option value="ISK" name="Icelandic krona">Icelandic krona</option>
+                    <option value="NOK" name="Norwegian krone">Norwegian krone</option>
+                    <option value="HRK" name="Croatian kuna">Croatian kuna</option>
+                    <option value="RUB" name="Russian rouble">Russian rouble</option>
+                    <option value="TRY" name="Turkish lira">Turkish lira</option>
+                    <option value="AUD" name="Australian dollar">Australian dollar</option>
+                    <option value="BRL" name="Brazilian real">Brazilian real</option>
+                    <option value="CAD" name="Canadian dollar">Canadian dollar</option>
+                    <option value="CNY" name="Chinese yuan renminbi">Chinese yuan renminbi</option>
+                    <option value="HKD" name="Hong Kong dollar">Hong Kong dollar</option>
+                    <option value="IDR" name="Indonesian rupiah">Indonesian rupiah</option>
+                    <option value="ILS" name="Israeli shekel">Israeli shekel</option>
+                    <option value="INR" name="Indian rupee">Indian rupee</option>
+                    <option value="KRW" name="South Korean won">South Korean won</option>
+                    <option value="MXN" name="Mexican peso">Mexican peso</option>
+                    <option value="MYR" name="Malaysian ringgit">Malaysian ringgit</option>
+                    <option value="NZD" name="New Zealand dollar">New Zealand dollar</option>
+                    <option value="PHP" name="Philippine peso">Philippine peso</option>
+                    <option value="SGD" name="Singapore dollar">Singapore dollar</option>
+                    <option value="THB" name="Thai baht">Thai baht</option>
+                    <option value="ZAR" name="South African rand">South African rand</option>
+                </select><br \><br \>
+                Time: <br \>
+                <select name="time" id="time">
+                    <option value="LastWeek">Last Week</option>
+                    <option value="LastYear">Last Year</option>
+                </select>
+                <input id="submit" type='button' value="Submit" onclick="graph()">
+            </form><br \><br \>
+            <div id="graphResult">
+                <canvas id="canvas" width="1000px" height="400px"></canvas>
+            </div>
+        </div>
+        <div id="drawing">
+            <div class="circle" id="circle1">&nbsp;</div>
+            <div class="circle" id="circle2">&nbsp;</div>
+        </div>
+    </main>
 </body>
-<script src="changeElements.js"></script>
-
+<script src="animation.js"></script>
+<script language="javascript" src="changeElements.js"></script>
 <script>
-	function getRates() {
-			/* Step 1: Make instance of request object...
-			...to make HTTP request after page is loaded*/
-			request = new XMLHttpRequest();
-			console.log("1 - request object created");
-			// Step 2: Set the URL for the AJAX request to be the JSON file
-			base = document.getElementById("baseCurrency").value;
-			comparison = document.getElementById("compCurrency").value;
-			amount = document.getElementById("amount").value;
+    function getRates() {
+        /* Step 1: Make instance of request object...
+        ...to make HTTP request after page is loaded*/
+        request = new XMLHttpRequest();
+        console.log("1 - request object created");
+        // Step 2: Set the URL for the AJAX request to be the JSON file
+        base = document.getElementById("baseCurrency").value;
+        comparison = document.getElementById("compCurrency").value;
+        amount = document.getElementById("amount").value;
+        request.open("GET", "https://api.exchangeratesapi.io/latest?symbols=" + comparison + "&base=" + base, true);
+        console.log("2 - opened request file");
+        // Step 3: set up event handler/callback
+        request.onreadystatechange = function () {
+            console.log("3 - readystatechange event fired.");
+            if (request.readyState == 4 && request.status == 200) {
+                // Step 5: wait for done + success
+                result = request.responseText;
+                ex_rates = JSON.parse(result);
+                name1 = document.getElementById("baseCurrency").value;
+                name2 = document.getElementById("compCurrency").value;
+                comp1 = ex_rates.rates[name2];
+                comp2 = comp1 * amount;
+                comp3 = (Math.round(comp2 * 100) / 100);
+                x = amount+" "+name1+" = "+comp3+" "+name2;
+                document.getElementById("quickConvertResult").innerHTML = x;
 
-			request.open("GET", "https://api.exchangeratesapi.io/latest?symbols="+comparison+"&base="+base, true);
-			console.log("2 - opened request file");
-			// Step 3: set up event handler/callback
-			request.onreadystatechange = function() {
-				console.log("3 - readystatechange event fired.");
-				if (request.readyState == 4 && request.status == 200) {
-					// Step 5: wait for done + success
-					result = request.responseText;
-					ex_rates = JSON.parse(result);
-					name1 = document.getElementById("baseCurrency").value;
-					name2 = document.getElementById("compCurrency").value;
-					comp1 = ex_rates.rates[name2];
-					comp2 = comp1 * amount;
-					comp3 = (Math.round(comp2 * 100) / 100);
-					x= amount+" "+name1+" = "+comp3+" "+name2;
-					document.getElementById("quickConvertResult").innerHTML =x;
-					
-				}
-				else if (request.readyState == 4 && request.status != 200) {
-					document.getElementById("quickConvertResult").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
-				}
-				else if (request.readyState == 3) {
-					document.getElementById("quickConvertResult").innerHTML = "Too soon!  Try again";
-				}
-			}
-		// Step 4: fire off the HTTP request
-		request.send();
-		console.log("4 - Request sent");
-	}
-	function get_user_currency() {
+            }
+            else if (request.readyState == 4 && request.status != 200) {
+                document.getElementById("quickConvertResult").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+            }
+            else if (request.readyState == 3) {
+                document.getElementById("quickConvertResult").innerHTML = "Too soon!  Try again";
+            }
+        }
+        // Step 4: fire off the HTTP request
+        request.send();
+        console.log("4 - Request sent");
+    }
+</script>
+<script language="javascript">
+    var flag = 0;
+    function graph() {
+        if (flag != 0){
+            remVal(myChart);
+        }
+        var ctx = document.getElementById('canvas');
+        window.myLine = new Chart(ctx, myChart);
 
+        var time = document.getElementById("time").value;
+        var baseCurr = document.getElementById("baseCurrencyForGraph").value;
+        var targetCurr = document.getElementById("targetCurrencyForGraph").value;
+        if (time == "LastWeek") {
+            graphWeek(targetCurr, baseCurr);
+            flag++;
+
+        } else if (time == "LastYear") {
+            graphYear(targetCurr, baseCurr);
+            flag++;
+        }
+    }
+
+    function remVal(targetchart) {
+        for (i = 1; i <= 12; i++) {
+            if (targetchart.data.datasets.length > 0) {
+                targetchart.data.labels.splice(-1, 1);
+                targetchart.data.datasets.forEach(function (dataset) {
+                    dataset.data.pop();
+                });
+                window.myLine.update();
+            }
+        }
+    }
+
+    function get_user_currency() {
 		$.getJSON('https://json.geoiplookup.io/api?callback=?', function(data) {
 			//console.log(JSON.stringify(data, null, 2));
 			currency = JSON.stringify(data.currency_name, null, 2);
 			document.getElementById("currency").innerHTML = "Your country uses: " + currency;
 		});
-
 	}
 	window.onload=get_user_currency();
 </script>
-</html>
 
+</html>
