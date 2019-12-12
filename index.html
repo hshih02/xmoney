@@ -10,6 +10,7 @@
     <link type="text/css" rel="stylesheet" href="mainStyling.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.6.0/stitch.js"></script>
     <script src="./util.js"></script>
     <script src="./dates.js"></script>
     <script src="jquery_library.js"></script>
@@ -464,5 +465,15 @@
 	}
 	window.onload=get_user_currency();
 </script>
-
+<!--  <script>
+ 	const client = stitch.Stitch.initializeDefaultAppClient('comp20finalproject-nnzlh');
+  	const db = client.getServiceClient(stitch.RemoteMongoClient.factory, 'mongodb-atlas').db('comp20final');
+  	client.auth.loginWithCredential(new stitch.AnonymousCredential()).then(user => 
+  	{
+  		client.executeFunction("get_country_info", "English").then(result=> {
+  		console.log(result);
+  		});
+  	});
+    
+ </script> -->
 </html>
