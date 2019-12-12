@@ -425,9 +425,9 @@
 <script language="javascript">
     var flag = 0;
     function graph() {
-//        if (flag != 0) {
-//            remVal(myChart);
-//        }
+        if (flag != 0) {
+            remVal(myChart);
+        }
         var ctx = document.getElementById('canvas');
         window.myLine = new Chart(ctx, myChart);
 
@@ -446,13 +446,12 @@
 
     function remVal(targetchart) {
         for (i = 1; i <= 12; i++) {
-            if (targetchart.data.datasets.length > 0) {
+            if (targetchart.data.datasets.length >= 0) {
                 targetchart.data.labels.splice(-1, 1);
                 targetchart.data.datasets.forEach(function (dataset) {
                     dataset.data.pop();
                 });
-                window.myLine.update();
-            }
+        window.myLine.update();
         }
     }
 
