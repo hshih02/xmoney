@@ -95,7 +95,6 @@ select{
 
 #submit{
     width: 60px;
-    font-size: 20pt;
     margin-left: 10px;
 }
 #submit:active {
